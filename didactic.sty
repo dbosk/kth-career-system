@@ -1,0 +1,697 @@
+%%
+%% This is file `didactic.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% didactic.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright (C) 2019-2020, 2022, 2024 by Daniel Bosk <daniel@bosk.se>
+%% 
+%% This file may be distributed and/or modified under the conditions of
+%% the LaTeX Project Public License, either version 1.3c of this license
+%% or (at your option) any later version.  The latest version of this
+%% license is in:
+%% 
+%%    http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3 or later is part of all distributions of LaTeX version
+%% 2005/12/01 or later.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{didactic}
+  [2024/08/16 v2.3 didactic]
+\RequirePackage{xparse}
+\RequirePackage{xkeyval}
+\RequirePackage{xstring}
+\RequirePackage{etoolbox}
+\RequirePackage{pythontex}
+\RequirePackage{minted}
+\RequirePackage{babel}
+\RequirePackage{translations}
+\RequirePackage{amsthm}
+\RequirePackage{thmtools}
+\PassOptionsToPackage{unq}{unique}
+\RequirePackage{unique}
+\newif\if@didactic@beamer
+\@ifclassloaded{beamer}{\@didactic@beamertrue}{\@didactic@beamerfalse}
+\DeclareOptionX{nobeamer}{\@didactic@beamerfalse}
+\newif\if@didactic@article
+\@ifclassloaded{beamer}{\@didactic@articlefalse}{\@didactic@articletrue}
+\newif\if@didactic@beamertheme
+\@didactic@beamerthemetrue
+\DeclareOptionX{nobeamertheme}{\@didactic@beamerthemefalse}
+\DeclareOptionX{noarticle}{\@didactic@articlefalse}
+\newif\if@didactic@memoir
+\@ifclassloaded{memoir}{\@didactic@memoirtrue}{\@didactic@memoirfalse}
+\DeclareOptionX{nomemoir}{\@didactic@memoirfalse}
+\newif\if@didactic@theorems
+\@didactic@theoremstrue
+\DeclareOptionX{notheorems}{\@didactic@theoremsfalse}
+\newcommand\@didactic@margin@inner{20mm}
+\newcommand\@didactic@margin@outer{60mm}
+\newcommand\@didactic@margin@top{30mm}
+\newcommand\@didactic@margin@bottom{60mm}
+\DeclareOptionX{inner}[20mm]{\renewcommand\@didactic@margin@inner{#1}}
+\DeclareOptionX{outer}[60mm]{\renewcommand\@didactic@margin@outer{#1}}
+\DeclareOptionX{top}[25mm]{\renewcommand\@didactic@margin@top{#1}}
+\DeclareOptionX{bottom}[60mm]{\renewcommand\@didactic@margin@bottom{#1}}
+\newcommand\@didactic@marginparmargin{outer}
+\@ifclassloaded{memoir}{\marginparmargin{outer}}{}
+\DeclareOptionX{marginparmargin}{%
+  \renewcommand\@didactic@marginparmargin{#1}
+  \@ifclassloaded{memoir}{%
+    \marginparmargin{#1}
+    \strictpagechecktrue
+    \checkandfixthelayout
+  }{}
+}
+\ProcessOptionsX\relax
+\if@didactic@beamer
+
+\if@didactic@beamertheme
+  \usetheme{Berlin}
+  \setbeamertemplate{footline}%{miniframes theme}
+  {%
+    \begin{beamercolorbox}[colsep=1.5pt]{upper separation line foot}
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,%
+      leftskip=.3cm,rightskip=.3cm plus1fil]{author in head/foot}%
+      \leavevmode{\usebeamerfont{author in head/foot}\insertshortauthor}%
+      \hfill%
+      {\usebeamerfont{institute in head/foot}%
+        \usebeamercolor[fg]{institute in head/foot}\insertshortinstitute}%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,%
+      leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
+      {\usebeamerfont{title in head/foot}\insertshorttitle}%
+      \hfill%
+      \insertframenumber%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[colsep=1.5pt]{lower separation line foot}
+    \end{beamercolorbox}
+  }
+  \setbeamercovered{transparent}
+  \setbeamertemplate{bibliography item}{\relax}
+\fi
+\AtBeginSection[]{%
+  \begin{frame}<beamer>
+    \tableofcontents[currentsection,
+                     subsectionstyle=show/show/hide,
+                     subsubsectionstyle=show/show/hide]
+  \end{frame}
+}
+\AtBeginSubsection[]{%
+  \begin{frame}<beamer>
+    \tableofcontents[currentsection,
+                     subsectionstyle=show/shaded/hide,
+                     subsubsectionstyle=show/show/hide]
+  \end{frame}
+}
+\fi% end \if@didactic@beamer
+\if@didactic@memoir
+\RequirePackage{marginfix}
+\setlrmarginsandblock{\@didactic@margin@inner}
+                     {\@didactic@margin@outer}
+                     {*}
+\setulmarginsandblock{\@didactic@margin@top}
+                     {\@didactic@margin@bottom}
+                     {*}
+
+\footnotesinmargin
+
+\RequirePackage{ragged2e}
+\renewcommand{\sidefootform}{\RaggedRight}
+\renewcommand{\foottextfont}{\footnotesize\RaggedRight}
+
+\setmpjustification{\RaggedRight}{\RaggedRight}
+
+\setfloatadjustment{marginfigure}{\mpjustification}
+\setmarginfloatcaptionadjustment{figure}{\captionstyle{\mpjustification}}
+
+\sidecapmargin{outer}
+\setsidecappos{t}
+\checkandfixthelayout
+\setsidecaps{\marginparsep}{\marginparwidth}
+\renewcommand{\sidecapstyle}{%
+  \captionstyle{\RaggedRight}
+}
+
+\makechapterstyle{arthangnum}{%
+  \typeout{Using arthangnum chapter style.}
+  \chapterstyle{article}
+  \settowidth{\chapindent}{\chapnumfont 999}
+  \renewcommand*{\printchaptername}{}
+  \renewcommand*{\chapternamenum}{}
+  \renewcommand*{\printchapternum}{%
+    \noindent\llap{\makebox[\chapindent][l]{\chapnumfont \thechapter}}}
+  \renewcommand*{\afterchapternum}{}
+  \setsecheadstyle{\normalfont\large\bfseries}
+  %\setsubsecheadstyle{\normalfont\normalsize\bfseries}
+  \hangsecnum
+}
+\setsecnumdepth{subsection}
+\maxtocdepth{subsection}
+
+\RequirePackage{ifxetex}
+\ifxetex
+  \RequirePackage{fontspec}
+  % https://tex.stackexchange.com/a/506776/17418
+  \usepackage{newpxtext,newpxmath}
+\else
+  % https://tex.stackexchange.com/a/324757/17418
+  % Palatino for main text and math
+  \RequirePackage[osf,sc]{mathpazo}
+  % Helvetica for sans serif
+  % (scaled to match size of Palatino)
+  \RequirePackage[scaled=0.90]{helvet}
+  % Bera Mono for monospaced
+  % (scaled to match size of Palatino)
+  \RequirePackage[scaled=0.85]{beramono}
+\fi
+\setlxvchars\setxlvchars
+\checkandfixthelayout
+\nouppercaseheads
+\fi% end \if@didactic@memoir
+\@ifpackageloaded{biblatex}{%
+  \ExecuteBibliographyOptions{%
+    autocite=footnote,
+    singletitle=false,
+    maxbibnames=99,
+    isbn=false,doi=false,url=false
+  }
+  % from https://tex.stackexchange.com/a/374059/17418
+  \DeclareCiteCommand{\fullauthorcite}
+    {\usebibmacro{prenote}}
+    {\usedriver
+      {\setcounter{maxnames}{99}% use up to 99 authors
+        \DeclareNameAlias{sortname}{default}}
+      {\thefield{entrytype}}}
+    {\multicitedelim}
+    {\usebibmacro{postnote}}
+}{}
+\@ifpackageloaded{csquotes}{%
+  \SetCiteCommand{\autocite}
+}{}
+\ProvideDocumentEnvironment{sidecaption}{omo}{%
+  \relax
+}{
+  \IfValueTF{#1}
+    {\caption[#1]{#2\IfValueT{#3}{\label{#3}}}}
+    {\caption{#2\IfValueT{#3}{\label{#3}}}}
+}
+\NewDocumentCommand{\flushscap}{O{\centering}}{%
+  \@ifclassloaded{memoir}{%
+    \ifscapmargleft%
+      \flushleft%
+    \else%
+      \flushright%
+    \fi%
+  }{%
+    #1%
+  }%
+}
+\ProvideDocumentCommand{\ProvideSemanticEnv}{m o m o mmmm}{%
+  \@ifundefined{#1}{%
+    \@ifclassloaded{beamer}{% beamer
+      \IfValueTF{#2}{%
+        \ProvideDocumentEnvironment{#1}{o}{%
+          \begin{#2}{\GetTranslationWarn{#3}\IfValueT{##1}{: ##1}}
+        }{%
+          \end{#2}
+        }
+      }{%
+        \ProvideDocumentEnvironment{#1}{o}{%
+          \begin{block}{\GetTranslationWarn{#3}\IfValueT{##1}{: ##1}}
+        }{%
+          \end{block}
+        }
+      }
+    }{% not beamer
+      \IfValueTF{#4}{%
+        \declaretheorem[
+          name=\GetTranslationWarn{#3},
+          refname={{\GetTranslationWarn{#5}},{\GetTranslationWarn{#6}}},
+          Refname={{\GetTranslationWarn{#7}},{\GetTranslationWarn{#8}}},
+          #4
+        ]{#1}
+      }{%
+        \declaretheorem[
+          style=definition,
+          name=\GetTranslationWarn{#3},
+          refname={{\GetTranslationWarn{#5}},{\GetTranslationWarn{#6}}},
+          Refname={{\GetTranslationWarn{#7}},{\GetTranslationWarn{#8}}}
+        ]{#1}
+      }
+    }
+    \AtBeginDocument{%
+      \@ifpackageloaded{cleveref}{%
+        \crefname{#1}
+          {\GetTranslationWarn{#5}}
+          {\GetTranslationWarn{#6}}
+        \Crefname{#1}
+          {\GetTranslationWarn{#7}}
+          {\GetTranslationWarn{#8}}
+      }{%
+        \relax
+      }
+    }
+  }{\relax} % \@ifundefined{#1}
+} % \ProvideSemanticEnv
+\ProvideSemanticEnv{assumption}[alertblock]{Assumption}
+  {assumption}{assumptions}{Assumption}{Assumptions}
+\ProvideSemanticEnv{idea}[greenblock]{Idea}
+  {idea}{ideas}{Idea}{Ideas}
+\ProvideSemanticEnv{question}[orangeblock]{Question}
+  {question}{questions}{Question}{Questions}
+\ProvideSemanticEnv{exercise}[yellowblock]{Exercise}
+  {exercise}{exercises}{Exercise}{Exercises}
+\ProvideSemanticEnv{activity}[yellowblock]{Activity}
+  {activity}{activities}{Activity}{Activities}
+\ProvideSemanticEnv{remark}[alertblock]{Remark}[%
+    numbered=no,style=remark
+  ]{remark}{remarks}{Remark}{Remarks}
+\ProvideSemanticEnv{summary}[block]{Summary}[%
+    numbered=no,style=remark
+  ]{summary}{summaries}{Summary}{Summaries}
+\if@didactic@theorems
+  \ProvideSemanticEnv{definition}[block]{Definition}
+    {definition}{definitions}{Definition}{Definitions}
+  \ProvideSemanticEnv{theorem}[block]{Theorem}[%
+      numbered=unless unique,style=theorem
+    ]{theorem}{theorems}{Theorem}{Theorems}
+  \ProvideSemanticEnv{corollary}[block]{Corollary}[%
+      numbered=unless unique,style=theorem
+    ]{corollary}{corollaries}{Corollary}{Corollaries}
+  \ProvideSemanticEnv{lemma}[block]{Lemma}[%
+      numbered=unless unique,style=theorem
+    ]{lemma}{lemmas}{Lemma}{Lemmas}
+  \ProvideSemanticEnv{proof}[block]{Proof}[%
+      numbered=no,style=proof
+    ]{proof}{proofs}{Proof}{Proofs}
+  \ProvideSemanticEnv{solution}[block]{Solution}[%
+      numbered=no,style=proof
+    ]{solution}{solutions}{Solution}{Solutions}
+  \ProvideSemanticEnv{example}[exampleblock]{Example}
+    {example}{examples}{Example}{Examples}
+\fi
+\ProvideTranslation{swedish}{Assumption}{Antagande}
+\ProvideTranslation{swedish}{Assumptions}{Antagandena}
+\ProvideTranslation{swedish}{assumption}{antagande}
+\ProvideTranslation{swedish}{assumptions}{antagandena}
+\ProvideTranslation{swedish}{Idea}{Idé}
+\ProvideTranslation{swedish}{Ideas}{Idéerna}
+\ProvideTranslation{swedish}{idea}{idé}
+\ProvideTranslation{swedish}{ideas}{idéerna}
+\ProvideTranslation{swedish}{Question}{Fråga}
+\ProvideTranslation{swedish}{Questions}{Frågor}
+\ProvideTranslation{swedish}{question}{fråga}
+\ProvideTranslation{swedish}{questions}{frågor}
+\ProvideTranslation{swedish}{Exercise}{Övningsuppgift}
+\ProvideTranslation{swedish}{Exercises}{Övningsuppgifterna}
+\ProvideTranslation{swedish}{exercise}{övningsuppgift}
+\ProvideTranslation{swedish}{exercises}{övningsuppgifterna}
+\ProvideTranslation{swedish}{Activity}{Aktivitet}
+\ProvideTranslation{swedish}{Activities}{Aktiviteter}
+\ProvideTranslation{swedish}{activity}{aktivitet}
+\ProvideTranslation{swedish}{activities}{aktiviteter}
+\ProvideTranslation{swedish}{Note}{Anmärkning}
+\ProvideTranslation{swedish}{Notes}{Anmärkningar}
+\ProvideTranslation{swedish}{note}{anmärkning}
+\ProvideTranslation{swedish}{notes}{anmärkningar}
+\ProvideTranslation{swedish}{Remark}{Anmärkning}
+\ProvideTranslation{swedish}{Remarks}{Anmärkningar}
+\ProvideTranslation{swedish}{remark}{anmärkning}
+\ProvideTranslation{swedish}{remarks}{anmärkningar}
+\ProvideTranslation{swedish}{Summary}{Sammanfattning}
+\ProvideTranslation{swedish}{Summaries}{Sammanfattningar}
+\ProvideTranslation{swedish}{summary}{sammanfattning}
+\ProvideTranslation{swedish}{summaries}{sammanfattningar}
+\ProvideTranslation{swedish}{definition}{definition}
+\ProvideTranslation{swedish}{definitions}{definitionerna}
+\ProvideTranslation{swedish}{Definition}{Definition}
+\ProvideTranslation{swedish}{Definitions}{Definitionerna}
+\ProvideTranslation{swedish}{theorem}{sats}
+\ProvideTranslation{swedish}{theorems}{satserna}
+\ProvideTranslation{swedish}{Theorem}{Sats}
+\ProvideTranslation{swedish}{Theorems}{Satserna}
+\ProvideTranslation{swedish}{corollary}{följdsats}
+\ProvideTranslation{swedish}{Corollary}{Följdsats}
+\ProvideTranslation{swedish}{corollaries}{följdsatser}
+\ProvideTranslation{swedish}{Corollaries}{Följdsatser}
+\ProvideTranslation{swedish}{lemma}{hjälpsats}
+\ProvideTranslation{swedish}{lemmas}{hjälpsatserna}
+\ProvideTranslation{swedish}{Lemma}{Hjälpsats}
+\ProvideTranslation{swedish}{Lemmas}{Hjälpsatserna}
+\ProvideTranslation{swedish}{proof}{bevis}
+\ProvideTranslation{swedish}{Proof}{Bevis}
+\ProvideTranslation{swedish}{proofs}{bevisen}
+\ProvideTranslation{swedish}{Proofs}{Bevisen}
+\ProvideTranslation{swedish}{Solution}{Lösningsförslag}
+\ProvideTranslation{swedish}{Solutions}{Lösningsförslagen}
+\ProvideTranslation{swedish}{solution}{lösningsförslag}
+\ProvideTranslation{swedish}{solutions}{lösningsförslagen}
+\ProvideTranslation{swedish}{Example}{Exempel}
+\ProvideTranslation{swedish}{Examples}{Exemplen}
+\ProvideTranslation{swedish}{example}{exempel}
+\ProvideTranslation{swedish}{examples}{exemplen}
+\ProvideDocumentEnvironment{lightblock}{mm}{%
+  \setbeamercolor{block body}{bg=#1!10,fg=black}
+  \setbeamercolor{block title}{bg=#1,fg=black}
+  \setbeamercolor{local structure}{fg=#1}
+  \begin{block}{#2}
+}{%
+  \end{block}
+}
+\ProvideDocumentEnvironment{darkblock}{mm}{%
+  \setbeamercolor{block body}{bg=#1!10,fg=black}
+  \setbeamercolor{block title}{bg=#1,fg=white}
+  \setbeamercolor{local structure}{fg=#1}
+  \begin{block}{#2}
+}{%
+  \end{block}
+}
+\ProvideDocumentEnvironment{blackblock}{m}
+{\begin{darkblock}{black}{#1}}
+{\end{darkblock}}
+\ProvideDocumentEnvironment{whiteblock}{m}{%
+  \setbeamercolor{block body}{bg=white!10,fg=black}
+  \setbeamercolor{block title}{bg=white,fg=black}
+  \setbeamercolor{local structure}{fg=black}
+  \begin{block}{#1}
+}{%
+  \end{block}
+}
+\ProvideDocumentEnvironment{bwblock}{m}{%
+  \setbeamercolor{block body}{bg=white!10,fg=black}
+  \setbeamercolor{block title}{bg=black,fg=white}
+  \setbeamercolor{local structure}{fg=black}
+  \begin{block}{#1}
+}{%
+  \end{block}
+}
+\ProvideDocumentEnvironment{redblock}{m}
+{\begin{darkblock}{red}{#1}}
+{\end{darkblock}}
+\ProvideDocumentEnvironment{blueblock}{m}
+{\begin{darkblock}{blue}{#1}}
+{\end{darkblock}}
+\ProvideDocumentEnvironment{purpleblock}{m}
+{\begin{darkblock}{purple}{#1}}
+{\end{darkblock}}
+\ProvideDocumentEnvironment{greenblock}{m}
+{\begin{lightblock}{green}{#1}}
+{\end{lightblock}}
+\ProvideDocumentEnvironment{yellowblock}{m}
+{\begin{lightblock}{yellow}{#1}}
+{\end{lightblock}}
+\ProvideDocumentEnvironment{orangeblock}{m}
+{\begin{lightblock}{orange}{#1}}
+{\end{lightblock}}
+\NewDocumentCommand{\indentedmarginpar}{+m}{%
+  \@ifclassloaded{memoir}{\strictpagecheck}{\relax}%
+  \marginpar{%
+    \setlength{\parindent}{1.0em}\footnotesize
+    \@afterindentfalse\@afterheading #1
+  }%
+}
+\NewDocumentCommand{\newnotetype}{omm}{%
+  \@ifclassloaded{beamer}{%
+    \NewDocumentCommand{#2}{+m}{\relax}
+  }{%
+    \IfValueTF{#1}
+      {\NewDocumentCommand{#2}{+m}{%
+        \indentedmarginpar{#1{#3:} ##1}%
+      }}
+      {\NewDocumentCommand{#2}{+m}{%
+        \indentedmarginpar{\emph{#3:} ##1}%
+      }}%
+  }
+}
+\NewDocumentCommand{\NewNoteType}{omm}{%
+  \newbool{#2}
+  \@ifclassloaded{beamer}
+    {\boolfalse{#2}}
+    {\booltrue{#2}}
+  \expandafter\newcommand\csname #2off\endcsname{\boolfalse{#2}}
+  \expandafter\newcommand\csname #2on\endcsname{\booltrue{#2}}
+  \IfValueTF{#1}{%
+    \expandafter\newcommand\csname #2\endcsname[1]{%
+      \ifbool{#2}{%
+        \indentedmarginpar{#1{#3:} ##1}%
+      }{\relax}%
+  }}{%
+    \expandafter\newcommand\csname #2\endcsname[1]{%
+      \ifbool{#2}{%
+        \indentedmarginpar{\emph{#3:} ##1}%
+      }{\relax}%
+  }}%
+}
+\ProvideTranslation{swedish}{Learning theory}{Lärandeteori}
+\NewNoteType{ltnote}{\GetTranslationWarn{Learning theory}}
+\begin{pycode}
+import importlib.util
+import inspect
+import os
+import pathlib
+import re
+import sys
+import subprocess
+import tempfile
+
+def didactic_mint(output, /, lang="text",
+                  minted_opts="escapeinside=||",
+                  fullwidth=False, hlgrep=None):
+  """
+  Typeset the output using minted.
+
+  - `lang` is the language of the output.
+  - `minted_opts` are options to pass to minted. The default is to escape
+  inside the code using |...|.
+  - `fullwidth` is a boolean to wrap the minted environment in a fullwidth
+  environment and blocks the margin. False by default.
+  - `hlgrep` is a list of patterns to highlight in the output. Every line that
+  matches one of the patterns will be highlighted.
+  """
+  if fullwidth:
+    print(r"\blockmargin")
+    print(r"\begin{fullwidth}")
+
+  if not minted_opts:
+    minted_opts = ""
+  if hlgrep:
+    highlightlines = []
+    for i, line in enumerate(output.splitlines()):
+      for pattern in hlgrep:
+        if re.search(pattern, line):
+          highlightlines.append(i+1)
+          break
+    hl_opt = f",highlightlines={{{','.join(str(i) for i in highlightlines)}}}"
+    if minted_opts:
+      minted_opts += f",{hl_opt}"
+    else:
+      minted_opts = hl_opt
+
+  with tempfile.NamedTemporaryFile(mode="w", delete=False,
+                                   dir=".",
+                                   prefix="didactic_output_",
+                                   suffix=".txt") as f:
+    f.write(output.strip())
+    filename = f.name
+
+  if minted_opts:
+    print(r"\inputminted[%s]{%s}{%s}" % (minted_opts, lang, filename))
+  else:
+    print(r"\inputminted{%s}{%s}" % (lang, filename))
+
+  if fullwidth:
+    print(r"\end{fullwidth}")
+    print(r"\unblockmargin")
+
+def didactic_shell(cmd, /, shell=False, **kwargs):
+  """
+  Run a Python program and typeset the output using minted.
+
+  - `cmd` is the command to run, it's a list, to be passed to `subprocess.run`.
+  - `kwargs` are passed to `didactic_mint`, see that function for more
+  information.
+  """
+  output = subprocess.run(cmd,
+                          shell=shell,
+                          stdout=subprocess.PIPE,
+                          stderr=subprocess.STDOUT)
+
+  didactic_mint(output.stdout.decode().strip(), **kwargs)
+
+def didactic_output(module, /, interpreter="python3", **kwargs):
+  """
+  Run a Python program and typeset the output using minted.
+
+  - `module` is anything that can be passed as an argument to the Python
+  interpreter. Usually a file name or a module name.
+  - `interpreter` is the Python interpreter to use. The default is `python3`.
+  - `kwargs` are passed to `didactic_mint`, see that function for more
+  information.
+  """
+  didactic_shell([interpreter, module], **kwargs)
+
+def didactic_pydoc(module, /, builtin=False, **kwargs):
+  """
+  Print the pydoc for a module.
+
+  If `builtin` is True, print the pydoc for a builtin module. For non-built in
+  modules, pydoc adds a few lines of paths to the module. We don't want that,
+  so we cut those lines. For built-ins, however, it doesn't print those lines,
+  so we shouldn't cut any lines in that case.
+
+  The `kwargs` are passed to `didactic_mint`, see that function for more
+  information.
+  """
+  output = subprocess.run(["python3", "-m", "pydoc", module],
+                          capture_output=True)
+  lines = output.stdout.decode().splitlines()
+  if not builtin:
+    lines = lines[:-4]
+  didactic_mint("\n".join(lines).strip(), lang="text", **kwargs)
+
+def didactic_help(module, /, **kwargs):
+  """
+  Print the help for a module.
+
+  The `kwargs` are passed to `didactic_mint`, see that function for more
+  information.
+  """
+  didactic_mint(help(module), **kwargs)
+
+def didactic_source(function, /, **kwargs):
+  """
+  Print the source code of a function. This is a function object and we use
+  inspection to get the source code of the actual Python function object.
+
+  The `kwargs` are passed to `didactic_mint`, see that function for more
+  information.
+  """
+  didactic_mint(inspect.getsource(function).strip(), lang="python", **kwargs)
+
+def didactic_import(module_name, module_path):
+  """
+  Import a module named `module_name` from a path `module_path`. This is useful
+  when we want to import a module that is not in the current directory. This
+  might be the case with PythonTeX, when it runs in a subdirectory and we want
+  to import a module that we're writing.
+  """
+  # from https://stackoverflow.com/a/67692/1305099
+  spec = importlib.util.spec_from_file_location(module_name, module_path)
+  the_module = importlib.util.module_from_spec(spec)
+  sys.modules[module_name] = the_module
+  spec.loader.exec_module(the_module)
+  return the_module
+
+def didactic_run_code(code, /, **kwargs):
+  """
+  Run a Python program and typeset the output using minted. The `code` is
+  Python code, not a file name. This function simply writes the code to a file
+  and then runs it using `didactic_output`.
+
+  - `kwargs` are passed to `didactic_output`, which in turn passes some
+  arguments on to `didactic_mint`. See those functions for details.
+  """
+  with tempfile.NamedTemporaryFile(mode="w", delete=False,
+                                   dir=".",
+                                   prefix="didactic_code_",
+                                   suffix=".py") as f:
+    f.write(code)
+    filename = f.name
+  didactic_output(filename, **kwargs)
+\end{pycode}
+\RequirePackage{marginfix}
+\NewDocumentCommand{\lstexample}{somm}{%
+  \IfBooleanTF{#1}{\blockmargin\begin{fullwidth}}{\relax}
+  \IfValueTF{#2}
+    {\inputminted[escapeinside=||,#2]{#3}{#4}}
+    {\inputminted[escapeinside=||]{#3}{#4}}
+  \IfBooleanTF{#1}{\end{fullwidth}\unblockmargin}{\relax}
+}
+\NewDocumentCommand{\runpython}{som}{%
+  \IfBooleanTF{#1}{%
+    \pyc{fullwidth = True}
+  }{
+    \pyc{fullwidth = False}
+  }
+  \IfValueTF{#2}{%
+    \pyc{minted_opts = '#2'}
+  }{
+    \pyc{minted_opts = None}
+  }
+  \pyc{didactic_output('#3', minted_opts=minted_opts, fullwidth=fullwidth)}
+}
+\RequirePackage{changepage}
+\RequirePackage{calc}
+\newlength{\@didactic@textbytext@oldcolumnwidth}
+\NewDocumentEnvironment{fullwidth}{}{%
+  \setlength{\columnwidth}{\textwidth+2em+\marginparwidth+\marginparsep}
+  \if@twoside
+    \IfStrEqCase{\@didactic@marginparmargin}{%
+        {inner}{\begin{adjustwidth*}{-\marginparwidth-\marginparsep}{-2em}}
+        {left}{\begin{adjustwidth}{-\marginparwidth-\marginparsep}{-2em}}
+        {outer}{\begin{adjustwidth*}{-2em}{-\marginparwidth-\marginparsep}}
+        {right}{\begin{adjustwidth}{-2em}{-\marginparwidth-\marginparsep}}
+      }[\relax]
+  \else
+    \IfStrEqCase{\@didactic@marginparmargin}{%
+        {inner}{\begin{adjustwidth}{-\marginparwidth-\marginparsep}{-2em}}
+        {left}{\begin{adjustwidth}{-\marginparwidth-\marginparsep}{-2em}}
+        {outer}{\begin{adjustwidth}{-2em}{-\marginparwidth-\marginparsep}}
+        {right}{\begin{adjustwidth}{-2em}{-\marginparwidth-\marginparsep}}
+      }[\relax]
+  \fi
+}{
+  \if@twoside
+    \end{adjustwidth*}
+  \else
+    \end{adjustwidth}
+  \fi
+}
+\RequirePackage{array}
+\NewDocumentCommand{\textbytext}{s+m+m}{%
+  \IfBooleanTF{#1}
+    {\blockmargin\begin{fullwidth}}
+    {\begin{center}}
+  \begin{tabular}{p{0.49\columnwidth}p{0.49\columnwidth}}
+    #2 & #3
+  \end{tabular}
+  \IfBooleanTF{#1}
+    {\end{fullwidth}\unblockmargin}
+    {\end{center}}
+}
+\RequirePackage{minted}
+\NewDocumentCommand{\codebycode}{sommomm}{%
+  \IfBooleanTF{#1}{\textbytext*}{\textbytext}
+  {%
+    \IfValueTF{#2}
+      {\lstexample[#2]{#3}{#4}}
+      {\lstexample{#3}{#4}}%
+  }{%
+    \IfValueTF{#5}
+      {\lstexample[#5]{#6}{#7}}
+      {\lstexample{#6}{#7}}%
+  }%
+}
+\NewDocumentCommand{\runbyrun}{somom}{%
+  \def\first{%
+    \IfValueTF{#2}{\pyc{minted_opts_1 = '#2'}}{\pyc{minted_opts_1 = None}}
+    \pyc{didactic_output('#3', minted_opts=minted_opts_1)}
+  }
+  \def\second{%
+    \IfValueTF{#4}{\pyc{minted_opts_2 = '#4'}}{\pyc{minted_opts_2 = None}}
+    \pyc{didactic_output('#5', minted_opts=minted_opts_2)}
+  }
+  \IfBooleanTF{#1}
+    {\textbytext*{\first}{\second}}
+    {\textbytext{\first}{\second}}
+}
+\endinput
+%%
+%% End of file `didactic.sty'.
