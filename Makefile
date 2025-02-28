@@ -10,6 +10,7 @@ o3mini.pdf: o3mini.tex
 
 svar.pdf: ./KTH_logo_PMS_2757_U_Obestruket_papper_Marinbla.eps
 svar.pdf: uppdrag.txt utredning.txt
+svar.pdf: kommentar.pdf
 
 uppdrag.txt: ./uppdrag-karriärsystem.pdf
 utredning.txt: ./utredning-karriärsystem.pdf

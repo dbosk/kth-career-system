@@ -1,0 +1,48 @@
+\documentclass[a4paper]{letter}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[swedish]{babel}
+\usepackage{biblatex}
+\usepackage{csquotes}
+\usepackage{pdfpages}
+\includepdfset{pages=-}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{cleveref}
+\usepackage{didactic}
+
+\signature{%
+  Daniel Bosk
+  %\\[0.5em]
+  \\
+  Universitetsadjunkt i datalogi
+  \\[0.5em]
+  Avd.~för teoretisk datalogi (TCS)\\
+  Skolan för elektroteknik och datavetenskap (EECS)
+}
+\address{%
+  Daniel Bosk <dbosk@kth.se>\\
+  EECS/TCS\\
+}
+
+\begin{document}
+\begin{letter}{Anders Söderholm, rektor\\[0.5em]
+  Nina Wormbs
+}
+\vspace*{-25em}
+\begin{center}
+  \includegraphics[width=2cm]{./KTH_logo_PMS_2757_U_Obestruket_papper_Marinbla.eps}
+\end{center}
+\vspace*{10em}
+  \opening{\textbf{En kommentar på utredningen om karriärsystemet}}
+
+  Bifogat finner ni mina synpunkter på utredningen om karriärsystemet och 
+  karriärsystemet i sig.
+
+  \closing{Vänligen,}
+
+  \encl{Kommentar på utredningen om karriärsystemet}
+\end{letter}
+\includepdf[pages=-]{./kommentar.pdf}
+\end{document}
